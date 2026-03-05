@@ -3,14 +3,17 @@ import streamlit as st
 import joblib
 import pandas as pd
 import matplotlib.pyplot as plt
-from sklearn.metrics import roc_curve, auc
+from sklearn.metrics import roc_curve, auc, confusion_matrix, ConfusionMatrixDisplay
 
 st.set_page_config(layout="wide")
 
 # ----------------------------
+
 # Load Model
+
 # ----------------------------
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(**file**)))
 model_path = os.path.join(BASE_DIR, "models", "rf_pipeline_streamlit.pkl")
 data_path = os.path.join(BASE_DIR, "data", "online_shoppers_intention.csv")
 
@@ -19,75 +22,92 @@ model = joblib.load(model_path)
 st.title("📈 Model Insights")
 
 # ----------------------------
+
 # Extract Model Components
+
 # ----------------------------
+
 classifier = model.named_steps["classifier"]
 preprocessor = model.named_steps["preprocessor"]
 
 # ----------------------------
+
 # Feature Names
+
 # ----------------------------
+
 encoded_feature_names = preprocessor.get_feature_names_out()
 
 clean_feature_names = [
-    name.replace("num__", "")
-        .replace("cat__", "")
-        .replace("_", " ")
-    for name in encoded_feature_names
+name.replace("num__", "")
+.replace("cat__", "")
+.replace("_", " ")
+for name in encoded_feature_names
 ]
 
 # ----------------------------
+
 # Feature Importance
+
 # ----------------------------
+
 importances = classifier.feature_importances_
 
 feature_importance_df = pd.DataFrame({
-    "Feature": clean_feature_names,
-    "Importance": importances
+"Feature": clean_feature_names,
+"Importance": importances
 }).sort_values(by="Importance", ascending=False)
 
 st.subheader("📊 Feature Importance Table")
 st.dataframe(feature_importance_df)
 
 # ----------------------------
-# Top 15 Feature Chart
+
+# Feature Importance Chart
+
 # ----------------------------
+
 top_features = feature_importance_df.head(15)
 
 st.subheader("Top 15 Most Important Features")
 
 fig, ax = plt.subplots()
-
 ax.barh(top_features["Feature"], top_features["Importance"])
 ax.invert_yaxis()
-
 ax.set_xlabel("Importance Score")
 ax.set_title("Feature Importance Ranking")
 
 st.pyplot(fig)
 
 # ----------------------------
+
 # Interpretation
+
 # ----------------------------
+
 st.markdown("""
+
 ### 📖 Interpretation
 
-The chart above shows which variables influence the model's predictions the most.
+The chart above shows which variables influence the model's predictions.
 
-Higher importance means the feature contributes more strongly when predicting
-whether a customer will make a purchase.
+Higher importance means the feature contributes more strongly to predicting
+whether a customer will purchase.
 
 Examples:
 
-• **PageValues** – customers viewing high-value pages are more likely to buy.  
-• **ExitRates** – high exit rates often indicate customers leaving without purchasing.  
-• **BounceRates** – high bounce rate signals low engagement.  
-• **ProductRelated pages** – browsing product pages suggests buying intent.
+• PageValues – customers viewing high-value pages are more likely to buy
+• ExitRates – high exit rates indicate leaving without buying
+• BounceRates – high bounce rates indicate low engagement
+• ProductRelated pages – browsing product pages suggests buying intent
 """)
 
 # ----------------------------
+
 # Model Performance Metrics
+
 # ----------------------------
+
 st.markdown("---")
 st.subheader("📊 Model Performance Metrics")
 
@@ -106,20 +126,27 @@ col4.metric("F1 Score", f1_score)
 col5.metric("AUC", auc_score)
 
 # ----------------------------
-# ROC Curve
+
+# Load Dataset for Evaluation
+
 # ----------------------------
-st.markdown("---")
-st.subheader("📉 ROC Curve")
 
 df = pd.read_csv(data_path)
 
 X = df.drop("Revenue", axis=1)
 y = df["Revenue"].astype(int)
 
-# Predict probabilities
+# ----------------------------
+
+# ROC Curve
+
+# ----------------------------
+
+st.markdown("---")
+st.subheader("📉 ROC Curve")
+
 y_prob = model.predict_proba(X)[:,1]
 
-# Compute ROC
 fpr, tpr, thresholds = roc_curve(y, y_prob)
 roc_auc = auc(fpr, tpr)
 
@@ -137,16 +164,40 @@ ax2.legend()
 st.pyplot(fig2)
 
 # ----------------------------
-# Metric Explanation
+
+# Confusion Matrix
+
 # ----------------------------
+
+st.markdown("---")
+st.subheader("📊 Confusion Matrix")
+
+y_pred = model.predict(X)
+
+cm = confusion_matrix(y, y_pred)
+
+fig3, ax3 = plt.subplots()
+
+disp = ConfusionMatrixDisplay(confusion_matrix=cm)
+disp.plot(ax=ax3)
+
+st.pyplot(fig3)
+
+# ----------------------------
+
+# Explanation
+
+# ----------------------------
+
 st.markdown("""
-### 📖 Metric Explanation
 
-• **Accuracy** – percentage of correct predictions.  
-• **Precision** – how many predicted buyers actually buy.  
-• **Recall** – how many real buyers the model detects.  
-• **F1 Score** – balance between precision and recall.  
-• **AUC** – the model's ability to distinguish buyers from non-buyers.
+### 📖 Confusion Matrix Explanation
 
-Higher scores indicate better model performance.
+• **True Negative** – correctly predicted non-purchases
+• **True Positive** – correctly predicted purchases
+• **False Positive** – predicted purchase but customer did not buy
+• **False Negative** – missed a real purchase
+
+The confusion matrix helps evaluate how well the model separates
+buyers from non-buyers.
 """)
