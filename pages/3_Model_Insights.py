@@ -8,9 +8,12 @@ from sklearn.metrics import roc_curve, auc, confusion_matrix, ConfusionMatrixDis
 st.set_page_config(layout="wide")
 
 # ----------------------------
+
 # Load Model
+
 # ----------------------------
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(**file**)))
 model_path = os.path.join(BASE_DIR, "models", "rf_pipeline_streamlit.pkl")
 data_path = os.path.join(BASE_DIR, "data", "online_shoppers_intention.csv")
 
@@ -19,39 +22,51 @@ model = joblib.load(model_path)
 st.title("📈 Model Insights")
 
 # ----------------------------
+
 # Extract Model Components
+
 # ----------------------------
+
 classifier = model.named_steps["classifier"]
 preprocessor = model.named_steps["preprocessor"]
 
 # ----------------------------
+
 # Feature Names
+
 # ----------------------------
+
 encoded_feature_names = preprocessor.get_feature_names_out()
 
 clean_feature_names = [
-    name.replace("num__", "")
-        .replace("cat__", "")
-        .replace("_", " ")
-    for name in encoded_feature_names
+name.replace("num__", "")
+.replace("cat__", "")
+.replace("_", " ")
+for name in encoded_feature_names
 ]
 
 # ----------------------------
+
 # Feature Importance
+
 # ----------------------------
+
 importances = classifier.feature_importances_
 
 feature_importance_df = pd.DataFrame({
-    "Feature": clean_feature_names,
-    "Importance": importances
+"Feature": clean_feature_names,
+"Importance": importances
 }).sort_values(by="Importance", ascending=False)
 
 st.subheader("📊 Feature Importance Table")
 st.dataframe(feature_importance_df)
 
 # ----------------------------
+
 # Feature Importance Chart
+
 # ----------------------------
+
 top_features = feature_importance_df.head(15)
 
 st.subheader("Top 15 Most Important Features")
@@ -65,8 +80,11 @@ ax.set_title("Feature Importance Ranking")
 st.pyplot(fig)
 
 # ----------------------------
+
 # Model Metrics
+
 # ----------------------------
+
 st.markdown("---")
 st.subheader("📊 Model Performance Metrics")
 
@@ -85,16 +103,22 @@ col4.metric("F1 Score", f1_score)
 col5.metric("AUC", auc_score)
 
 # ----------------------------
+
 # Load Dataset
+
 # ----------------------------
+
 df = pd.read_csv(data_path)
 
 X = df.drop("Revenue", axis=1)
 y = df["Revenue"].astype(int)
 
 # ----------------------------
+
 # ROC Curve
+
 # ----------------------------
+
 st.markdown("---")
 st.subheader("📉 ROC Curve")
 
@@ -104,7 +128,6 @@ fpr, tpr, thresholds = roc_curve(y, y_prob)
 roc_auc = auc(fpr, tpr)
 
 fig2, ax2 = plt.subplots()
-
 ax2.plot(fpr, tpr, label=f"ROC Curve (AUC = {roc_auc:.2f})")
 ax2.plot([0,1],[0,1],'--')
 
@@ -117,8 +140,11 @@ ax2.legend()
 st.pyplot(fig2)
 
 # ----------------------------
+
 # Confusion Matrix
+
 # ----------------------------
+
 st.markdown("---")
 st.subheader("📊 Confusion Matrix")
 
@@ -127,23 +153,38 @@ y_pred = model.predict(X)
 cm = confusion_matrix(y, y_pred)
 
 fig3, ax3 = plt.subplots()
-
 disp = ConfusionMatrixDisplay(confusion_matrix=cm)
 disp.plot(ax=ax3)
 
 st.pyplot(fig3)
 
 # ----------------------------
-# Explanation
+
+# Prediction Probability Distribution
+
 # ----------------------------
+
+st.markdown("---")
+st.subheader("📊 Prediction Probability Distribution")
+
+fig4, ax4 = plt.subplots()
+
+ax4.hist(y_prob, bins=20)
+
+ax4.set_xlabel("Purchase Probability")
+ax4.set_ylabel("Number of Customers")
+ax4.set_title("Distribution of Purchase Probabilities")
+
+st.pyplot(fig4)
+
 st.markdown("""
-### 📖 Confusion Matrix Explanation
 
-• True Negative – correctly predicted non-purchases  
-• True Positive – correctly predicted purchases  
-• False Positive – predicted purchase but customer did not buy  
-• False Negative – missed a real purchase
+### Interpretation
 
-The confusion matrix shows how well the model distinguishes
-between purchasing and non-purchasing customers.
+This chart shows how confident the model is across all predictions.
+
+• Values near **0** indicate very low purchase likelihood.
+• Values near **1** indicate strong purchase intent.
+
+This helps businesses identify groups of customers with high purchase potential.
 """)
