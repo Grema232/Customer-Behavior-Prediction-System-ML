@@ -1,4 +1,3 @@
-import os
 import streamlit as st
 import joblib
 import pandas as pd
@@ -9,41 +8,46 @@ st.set_page_config(layout="wide")
 
 # ----------------------------
 
-# Load Model
+# Load Model and Dataset
 
 # ----------------------------
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(**file**)))
-model_path = os.path.join(BASE_DIR, "models", "rf_pipeline_streamlit.pkl")
-data_path = os.path.join(BASE_DIR, "data", "online_shoppers_intention.csv")
-
-model = joblib.load(model_path)
+model = joblib.load("models/rf_pipeline_streamlit.pkl")
+df = pd.read_csv("data/online_shoppers_intention.csv")
 
 st.title("📈 Model Insights")
 
 # ----------------------------
 
-# Extract Model Components
+# Prepare Data
 
 # ----------------------------
 
-classifier = model.named_steps["classifier"]
-preprocessor = model.named_steps["preprocessor"]
+X = df.drop("Revenue", axis=1)
+y = df["Revenue"].astype(int)
+
+y_prob = model.predict_proba(X)[:,1]
+y_pred = model.predict(X)
 
 # ----------------------------
 
-# Feature Names
+# KPI Dashboard
 
 # ----------------------------
 
-encoded_feature_names = preprocessor.get_feature_names_out()
+st.subheader("📊 Customer Behavior KPIs")
 
-clean_feature_names = [
-name.replace("num__", "")
-.replace("cat__", "")
-.replace("_", " ")
-for name in encoded_feature_names
-]
+total_sessions = len(df)
+predicted_buyers = int(sum(y_pred))
+predicted_non_buyers = total_sessions - predicted_buyers
+avg_probability = y_prob.mean()
+
+k1, k2, k3, k4 = st.columns(4)
+
+k1.metric("Total Sessions", total_sessions)
+k2.metric("Predicted Buyers", predicted_buyers)
+k3.metric("Predicted Non-Buyers", predicted_non_buyers)
+k4.metric("Avg Purchase Probability", f"{avg_probability:.2f}")
 
 # ----------------------------
 
@@ -51,33 +55,34 @@ for name in encoded_feature_names
 
 # ----------------------------
 
+st.markdown("---")
+st.subheader("📊 Feature Importance")
+
+classifier = model.named_steps["classifier"]
+preprocessor = model.named_steps["preprocessor"]
+
+feature_names = preprocessor.get_feature_names_out()
+
 importances = classifier.feature_importances_
 
-feature_importance_df = pd.DataFrame({
-"Feature": clean_feature_names,
+importance_df = pd.DataFrame({
+"Feature": feature_names,
 "Importance": importances
 }).sort_values(by="Importance", ascending=False)
 
-st.subheader("📊 Feature Importance Table")
-st.dataframe(feature_importance_df)
+st.dataframe(importance_df)
 
-# ----------------------------
+top_features = importance_df.head(15)
 
-# Feature Importance Chart
+fig1, ax1 = plt.subplots()
 
-# ----------------------------
+ax1.barh(top_features["Feature"], top_features["Importance"])
+ax1.invert_yaxis()
 
-top_features = feature_importance_df.head(15)
+ax1.set_xlabel("Importance Score")
+ax1.set_title("Top Feature Importance")
 
-st.subheader("Top 15 Most Important Features")
-
-fig, ax = plt.subplots()
-ax.barh(top_features["Feature"], top_features["Importance"])
-ax.invert_yaxis()
-ax.set_xlabel("Importance Score")
-ax.set_title("Feature Importance Ranking")
-
-st.pyplot(fig)
+st.pyplot(fig1)
 
 # ----------------------------
 
@@ -94,48 +99,13 @@ recall = 0.62
 f1_score = 0.67
 auc_score = 0.92
 
-col1, col2, col3, col4, col5 = st.columns(5)
+c1, c2, c3, c4, c5 = st.columns(5)
 
-col1.metric("Accuracy", accuracy)
-col2.metric("Precision", precision)
-col3.metric("Recall", recall)
-col4.metric("F1 Score", f1_score)
-col5.metric("AUC", auc_score)
-
-# ----------------------------
-
-# Load Dataset
-
-# ----------------------------
-
-df = pd.read_csv(data_path)
-
-X = df.drop("Revenue", axis=1)
-y = df["Revenue"].astype(int)
-
-# ----------------------------
-
-# KPI Dashboard
-
-# ----------------------------
-
-st.markdown("---")
-st.subheader("📊 Customer Behavior KPIs")
-
-y_prob = model.predict_proba(X)[:,1]
-y_pred = model.predict(X)
-
-total_sessions = len(df)
-predicted_buyers = sum(y_pred)
-predicted_non_buyers = total_sessions - predicted_buyers
-avg_probability = y_prob.mean()
-
-k1, k2, k3, k4 = st.columns(4)
-
-k1.metric("Total Sessions", total_sessions)
-k2.metric("Predicted Buyers", predicted_buyers)
-k3.metric("Predicted Non-Buyers", predicted_non_buyers)
-k4.metric("Avg Purchase Probability", f"{avg_probability:.2f}")
+c1.metric("Accuracy", accuracy)
+c2.metric("Precision", precision)
+c3.metric("Recall", recall)
+c4.metric("F1 Score", f1_score)
+c5.metric("AUC", auc_score)
 
 # ----------------------------
 
@@ -150,12 +120,14 @@ fpr, tpr, thresholds = roc_curve(y, y_prob)
 roc_auc = auc(fpr, tpr)
 
 fig2, ax2 = plt.subplots()
-ax2.plot(fpr, tpr, label=f"ROC Curve (AUC = {roc_auc:.2f})")
+
+ax2.plot(fpr, tpr, label=f"AUC = {roc_auc:.2f}")
 ax2.plot([0,1],[0,1],'--')
 
 ax2.set_xlabel("False Positive Rate")
 ax2.set_ylabel("True Positive Rate")
-ax2.set_title("Receiver Operating Characteristic")
+ax2.set_title("ROC Curve")
+
 ax2.legend()
 
 st.pyplot(fig2)
@@ -172,6 +144,7 @@ st.subheader("📊 Confusion Matrix")
 cm = confusion_matrix(y, y_pred)
 
 fig3, ax3 = plt.subplots()
+
 disp = ConfusionMatrixDisplay(confusion_matrix=cm)
 disp.plot(ax=ax3)
 
@@ -187,10 +160,11 @@ st.markdown("---")
 st.subheader("📊 Prediction Probability Distribution")
 
 fig4, ax4 = plt.subplots()
+
 ax4.hist(y_prob, bins=20)
 
 ax4.set_xlabel("Purchase Probability")
 ax4.set_ylabel("Number of Customers")
-ax4.set_title("Distribution of Purchase Probabilities")
+ax4.set_title("Prediction Probability Distribution")
 
 st.pyplot(fig4)
