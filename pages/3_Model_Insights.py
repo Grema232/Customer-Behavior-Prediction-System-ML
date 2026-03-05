@@ -8,12 +8,9 @@ from sklearn.metrics import roc_curve, auc, confusion_matrix, ConfusionMatrixDis
 st.set_page_config(layout="wide")
 
 # ----------------------------
-
 # Load Model
-
 # ----------------------------
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(**file**)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 model_path = os.path.join(BASE_DIR, "models", "rf_pipeline_streamlit.pkl")
 data_path = os.path.join(BASE_DIR, "data", "online_shoppers_intention.csv")
 
@@ -22,51 +19,39 @@ model = joblib.load(model_path)
 st.title("📈 Model Insights")
 
 # ----------------------------
-
 # Extract Model Components
-
 # ----------------------------
-
 classifier = model.named_steps["classifier"]
 preprocessor = model.named_steps["preprocessor"]
 
 # ----------------------------
-
 # Feature Names
-
 # ----------------------------
-
 encoded_feature_names = preprocessor.get_feature_names_out()
 
 clean_feature_names = [
-name.replace("num__", "")
-.replace("cat__", "")
-.replace("_", " ")
-for name in encoded_feature_names
+    name.replace("num__", "")
+        .replace("cat__", "")
+        .replace("_", " ")
+    for name in encoded_feature_names
 ]
 
 # ----------------------------
-
 # Feature Importance
-
 # ----------------------------
-
 importances = classifier.feature_importances_
 
 feature_importance_df = pd.DataFrame({
-"Feature": clean_feature_names,
-"Importance": importances
+    "Feature": clean_feature_names,
+    "Importance": importances
 }).sort_values(by="Importance", ascending=False)
 
 st.subheader("📊 Feature Importance Table")
 st.dataframe(feature_importance_df)
 
 # ----------------------------
-
 # Feature Importance Chart
-
 # ----------------------------
-
 top_features = feature_importance_df.head(15)
 
 st.subheader("Top 15 Most Important Features")
@@ -80,34 +65,8 @@ ax.set_title("Feature Importance Ranking")
 st.pyplot(fig)
 
 # ----------------------------
-
-# Interpretation
-
+# Model Metrics
 # ----------------------------
-
-st.markdown("""
-
-### 📖 Interpretation
-
-The chart above shows which variables influence the model's predictions.
-
-Higher importance means the feature contributes more strongly to predicting
-whether a customer will purchase.
-
-Examples:
-
-• PageValues – customers viewing high-value pages are more likely to buy
-• ExitRates – high exit rates indicate leaving without buying
-• BounceRates – high bounce rates indicate low engagement
-• ProductRelated pages – browsing product pages suggests buying intent
-""")
-
-# ----------------------------
-
-# Model Performance Metrics
-
-# ----------------------------
-
 st.markdown("---")
 st.subheader("📊 Model Performance Metrics")
 
@@ -126,22 +85,16 @@ col4.metric("F1 Score", f1_score)
 col5.metric("AUC", auc_score)
 
 # ----------------------------
-
-# Load Dataset for Evaluation
-
+# Load Dataset
 # ----------------------------
-
 df = pd.read_csv(data_path)
 
 X = df.drop("Revenue", axis=1)
 y = df["Revenue"].astype(int)
 
 # ----------------------------
-
 # ROC Curve
-
 # ----------------------------
-
 st.markdown("---")
 st.subheader("📉 ROC Curve")
 
@@ -164,11 +117,8 @@ ax2.legend()
 st.pyplot(fig2)
 
 # ----------------------------
-
 # Confusion Matrix
-
 # ----------------------------
-
 st.markdown("---")
 st.subheader("📊 Confusion Matrix")
 
@@ -184,20 +134,16 @@ disp.plot(ax=ax3)
 st.pyplot(fig3)
 
 # ----------------------------
-
 # Explanation
-
 # ----------------------------
-
 st.markdown("""
-
 ### 📖 Confusion Matrix Explanation
 
-• **True Negative** – correctly predicted non-purchases
-• **True Positive** – correctly predicted purchases
-• **False Positive** – predicted purchase but customer did not buy
-• **False Negative** – missed a real purchase
+• True Negative – correctly predicted non-purchases  
+• True Positive – correctly predicted purchases  
+• False Positive – predicted purchase but customer did not buy  
+• False Negative – missed a real purchase
 
-The confusion matrix helps evaluate how well the model separates
-buyers from non-buyers.
+The confusion matrix shows how well the model distinguishes
+between purchasing and non-purchasing customers.
 """)
