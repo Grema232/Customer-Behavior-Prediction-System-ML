@@ -3,6 +3,7 @@ import streamlit as st
 import joblib
 import pandas as pd
 import matplotlib.pyplot as plt
+from sklearn.metrics import roc_curve, auc
 
 st.set_page_config(layout="wide")
 
@@ -11,6 +12,7 @@ st.set_page_config(layout="wide")
 # ----------------------------
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 model_path = os.path.join(BASE_DIR, "models", "rf_pipeline_streamlit.pkl")
+data_path = os.path.join(BASE_DIR, "data", "online_shoppers_intention.csv")
 
 model = joblib.load(model_path)
 
@@ -23,7 +25,7 @@ classifier = model.named_steps["classifier"]
 preprocessor = model.named_steps["preprocessor"]
 
 # ----------------------------
-# Get Feature Names
+# Feature Names
 # ----------------------------
 encoded_feature_names = preprocessor.get_feature_names_out()
 
@@ -44,9 +46,6 @@ feature_importance_df = pd.DataFrame({
     "Importance": importances
 }).sort_values(by="Importance", ascending=False)
 
-# ----------------------------
-# Feature Importance Table
-# ----------------------------
 st.subheader("📊 Feature Importance Table")
 st.dataframe(feature_importance_df)
 
@@ -68,7 +67,7 @@ ax.set_title("Feature Importance Ranking")
 st.pyplot(fig)
 
 # ----------------------------
-# Feature Interpretation
+# Interpretation
 # ----------------------------
 st.markdown("""
 ### 📖 Interpretation
@@ -84,8 +83,6 @@ Examples:
 • **ExitRates** – high exit rates often indicate customers leaving without purchasing.  
 • **BounceRates** – high bounce rate signals low engagement.  
 • **ProductRelated pages** – browsing product pages suggests buying intent.
-
-Understanding these features helps businesses improve marketing strategies.
 """)
 
 # ----------------------------
@@ -109,14 +106,45 @@ col4.metric("F1 Score", f1_score)
 col5.metric("AUC", auc_score)
 
 # ----------------------------
+# ROC Curve
+# ----------------------------
+st.markdown("---")
+st.subheader("📉 ROC Curve")
+
+df = pd.read_csv(data_path)
+
+X = df.drop("Revenue", axis=1)
+y = df["Revenue"].astype(int)
+
+# Predict probabilities
+y_prob = model.predict_proba(X)[:,1]
+
+# Compute ROC
+fpr, tpr, thresholds = roc_curve(y, y_prob)
+roc_auc = auc(fpr, tpr)
+
+fig2, ax2 = plt.subplots()
+
+ax2.plot(fpr, tpr, label=f"ROC Curve (AUC = {roc_auc:.2f})")
+ax2.plot([0,1],[0,1],'--')
+
+ax2.set_xlabel("False Positive Rate")
+ax2.set_ylabel("True Positive Rate")
+ax2.set_title("Receiver Operating Characteristic")
+
+ax2.legend()
+
+st.pyplot(fig2)
+
+# ----------------------------
 # Metric Explanation
 # ----------------------------
 st.markdown("""
 ### 📖 Metric Explanation
 
-• **Accuracy** – percentage of total predictions that are correct.  
+• **Accuracy** – percentage of correct predictions.  
 • **Precision** – how many predicted buyers actually buy.  
-• **Recall** – how many real buyers the model successfully detects.  
+• **Recall** – how many real buyers the model detects.  
 • **F1 Score** – balance between precision and recall.  
 • **AUC** – the model's ability to distinguish buyers from non-buyers.
 
