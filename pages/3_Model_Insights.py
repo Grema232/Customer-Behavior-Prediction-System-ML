@@ -2,7 +2,7 @@ import streamlit as st
 import joblib
 import pandas as pd
 import matplotlib.pyplot as plt
-from sklearn.metrics import roc_curve, auc, confusion_matrix, ConfusionMatrixDisplay
+from sklearn.metrics import roc_curve, auc, confusion_matrix, ConfusionMatrixDisplay, accuracy_score
 
 st.set_page_config(layout="wide")
 
@@ -62,7 +62,6 @@ classifier = model.named_steps["classifier"]
 preprocessor = model.named_steps["preprocessor"]
 
 feature_names = preprocessor.get_feature_names_out()
-
 importances = classifier.feature_importances_
 
 importance_df = pd.DataFrame({
@@ -75,10 +74,8 @@ st.dataframe(importance_df)
 top_features = importance_df.head(15)
 
 fig1, ax1 = plt.subplots()
-
 ax1.barh(top_features["Feature"], top_features["Importance"])
 ax1.invert_yaxis()
-
 ax1.set_xlabel("Importance Score")
 ax1.set_title("Top Feature Importance")
 
@@ -93,19 +90,19 @@ st.pyplot(fig1)
 st.markdown("---")
 st.subheader("📊 Model Performance Metrics")
 
-accuracy = 0.90
+accuracy = accuracy_score(y, y_pred)
 precision = 0.74
 recall = 0.62
 f1_score = 0.67
-auc_score = 0.92
+auc_score = auc(*roc_curve(y, y_prob)[:2])
 
 c1, c2, c3, c4, c5 = st.columns(5)
 
-c1.metric("Accuracy", accuracy)
+c1.metric("Accuracy", f"{accuracy:.2f}")
 c2.metric("Precision", precision)
 c3.metric("Recall", recall)
 c4.metric("F1 Score", f1_score)
-c5.metric("AUC", auc_score)
+c5.metric("AUC", f"{auc_score:.2f}")
 
 # ----------------------------
 
@@ -120,14 +117,12 @@ fpr, tpr, thresholds = roc_curve(y, y_prob)
 roc_auc = auc(fpr, tpr)
 
 fig2, ax2 = plt.subplots()
-
 ax2.plot(fpr, tpr, label=f"AUC = {roc_auc:.2f}")
 ax2.plot([0,1],[0,1],'--')
 
 ax2.set_xlabel("False Positive Rate")
 ax2.set_ylabel("True Positive Rate")
 ax2.set_title("ROC Curve")
-
 ax2.legend()
 
 st.pyplot(fig2)
@@ -144,7 +139,6 @@ st.subheader("📊 Confusion Matrix")
 cm = confusion_matrix(y, y_pred)
 
 fig3, ax3 = plt.subplots()
-
 disp = ConfusionMatrixDisplay(confusion_matrix=cm)
 disp.plot(ax=ax3)
 
@@ -168,3 +162,15 @@ ax4.set_ylabel("Number of Customers")
 ax4.set_title("Prediction Probability Distribution")
 
 st.pyplot(fig4)
+
+# ----------------------------
+
+# Footer / Credits
+
+# ----------------------------
+
+st.markdown("---")
+st.markdown(
+"<center><b>Developed by Mohammed Grema Alkali & Bashir Umar Zanna</b></center>",
+unsafe_allow_html=True
+)
