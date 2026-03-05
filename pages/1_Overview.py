@@ -2,18 +2,17 @@ import os
 import streamlit as st
 import joblib
 import pandas as pd
-import matplotlib.pyplot as plt
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import roc_curve, auc
 
 st.set_page_config(layout="wide")
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 model_path = os.path.join(BASE_DIR, "models", "rf_pipeline_streamlit.pkl")
 data_path = os.path.join(BASE_DIR, "data", "online_shoppers_intention.csv")
+auc_path = os.path.join(BASE_DIR, "model_auc.pkl")
 
 model = joblib.load(model_path)
 df = pd.read_csv(data_path)
+auc_score = joblib.load(auc_path)
 
 st.title("📊 Executive Overview")
 
@@ -31,25 +30,11 @@ k4.metric("Avg Bounce Rate", f"{avg_bounce_rate:.4f}")
 
 st.markdown("---")
 
-# ROC Curve
-st.subheader("Model Performance (ROC Curve)")
+st.subheader("🎯 Model Performance")
 
-X = df.drop("Revenue", axis=1)
-y = df["Revenue"]
+st.metric("Test AUC Score", f"{auc_score:.4f}")
 
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.3, random_state=42
+st.success(
+    "The model demonstrates strong discriminative ability with an AUC above 0.90, "
+    "indicating high predictive performance on unseen data."
 )
-
-y_scores = model.predict_proba(X_test)[:, 1]
-fpr, tpr, _ = roc_curve(y_test, y_scores)
-roc_auc = auc(fpr, tpr)
-
-fig, ax = plt.subplots()
-ax.plot(fpr, tpr, label=f"AUC = {roc_auc:.3f}")
-ax.plot([0, 1], [0, 1], linestyle="--")
-ax.set_xlabel("False Positive Rate")
-ax.set_ylabel("True Positive Rate")
-ax.legend()
-
-st.pyplot(fig)
