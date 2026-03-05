@@ -81,7 +81,7 @@ st.pyplot(fig)
 
 # ----------------------------
 
-# Model Metrics
+# Model Performance Metrics
 
 # ----------------------------
 
@@ -115,14 +115,36 @@ y = df["Revenue"].astype(int)
 
 # ----------------------------
 
+# KPI Dashboard
+
+# ----------------------------
+
+st.markdown("---")
+st.subheader("📊 Customer Behavior KPIs")
+
+y_prob = model.predict_proba(X)[:,1]
+y_pred = model.predict(X)
+
+total_sessions = len(df)
+predicted_buyers = sum(y_pred)
+predicted_non_buyers = total_sessions - predicted_buyers
+avg_probability = y_prob.mean()
+
+k1, k2, k3, k4 = st.columns(4)
+
+k1.metric("Total Sessions", total_sessions)
+k2.metric("Predicted Buyers", predicted_buyers)
+k3.metric("Predicted Non-Buyers", predicted_non_buyers)
+k4.metric("Avg Purchase Probability", f"{avg_probability:.2f}")
+
+# ----------------------------
+
 # ROC Curve
 
 # ----------------------------
 
 st.markdown("---")
 st.subheader("📉 ROC Curve")
-
-y_prob = model.predict_proba(X)[:,1]
 
 fpr, tpr, thresholds = roc_curve(y, y_prob)
 roc_auc = auc(fpr, tpr)
@@ -134,7 +156,6 @@ ax2.plot([0,1],[0,1],'--')
 ax2.set_xlabel("False Positive Rate")
 ax2.set_ylabel("True Positive Rate")
 ax2.set_title("Receiver Operating Characteristic")
-
 ax2.legend()
 
 st.pyplot(fig2)
@@ -148,8 +169,6 @@ st.pyplot(fig2)
 st.markdown("---")
 st.subheader("📊 Confusion Matrix")
 
-y_pred = model.predict(X)
-
 cm = confusion_matrix(y, y_pred)
 
 fig3, ax3 = plt.subplots()
@@ -160,7 +179,7 @@ st.pyplot(fig3)
 
 # ----------------------------
 
-# Prediction Probability Distribution
+# Probability Distribution
 
 # ----------------------------
 
@@ -168,7 +187,6 @@ st.markdown("---")
 st.subheader("📊 Prediction Probability Distribution")
 
 fig4, ax4 = plt.subplots()
-
 ax4.hist(y_prob, bins=20)
 
 ax4.set_xlabel("Purchase Probability")
@@ -176,15 +194,3 @@ ax4.set_ylabel("Number of Customers")
 ax4.set_title("Distribution of Purchase Probabilities")
 
 st.pyplot(fig4)
-
-st.markdown("""
-
-### Interpretation
-
-This chart shows how confident the model is across all predictions.
-
-• Values near **0** indicate very low purchase likelihood.
-• Values near **1** indicate strong purchase intent.
-
-This helps businesses identify groups of customers with high purchase potential.
-""")
