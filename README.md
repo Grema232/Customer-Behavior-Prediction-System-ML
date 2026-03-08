@@ -1,6 +1,20 @@
 # Customer Behavior Prediction System
 
-Machine Learning dashboard for predicting customer purchase behavior and generating marketing insights.
+[![Python](https://img.shields.io/badge/Python-3.10-blue)]()
+[![Streamlit](https://img.shields.io/badge/Built%20with-Streamlit-red)]()
+[![Machine Learning](https://img.shields.io/badge/Machine%20Learning-Random%20Forest-green)]()
+
+Machine Learning dashboard for predicting customer purchase behavior and generating actionable marketing insights.
+
+---
+
+## Live Demo
+
+Try the deployed application here:
+
+**https://grema232-customer-behavior-prediction-system-ml-app-8b9t9l.streamlit.app**
+
+The live dashboard allows users to upload datasets, run predictions, and explore customer behavior insights interactively.
 
 ---
 
@@ -8,19 +22,21 @@ Machine Learning dashboard for predicting customer purchase behavior and generat
 
 This project presents a machine learning system designed to predict whether a website visitor is likely to make a purchase based on their browsing behavior.
 
-The system integrates a predictive model with an interactive analytics dashboard to provide insights into customer behavior and support data-driven marketing strategies.
+The system combines a trained **Random Forest classification model** with an **interactive Streamlit analytics dashboard** to provide actionable insights for marketing teams.
+
+The goal of this project is to demonstrate how machine learning can support **data-driven marketing decisions** in e-commerce environments.
 
 ---
 
 ## Key Features
 
-• Real-time purchase prediction  
-• Batch prediction for customer datasets  
-• Model performance analytics (Accuracy, Precision, Recall, AUC)  
-• Feature importance analysis  
-• Customer segmentation using K-Means clustering  
-• Marketing decision insights  
-• Interactive Streamlit dashboard  
+• Real-time customer purchase prediction
+• Batch prediction for uploaded customer datasets
+• Model performance analytics (Accuracy, Precision, Recall, ROC-AUC)
+• Feature importance analysis
+• Customer segmentation using K-Means clustering
+• Marketing decision insights
+• Interactive multi-page Streamlit dashboard
 
 ---
 
@@ -32,11 +48,13 @@ The system integrates a predictive model with an interactive analytics dashboard
 
 ## Technologies Used
 
-Python  
-Pandas  
-Scikit-learn  
-Streamlit  
-Matplotlib  
+Python
+Pandas
+NumPy
+Scikit-learn
+Streamlit
+Matplotlib
+Seaborn
 
 ---
 
@@ -44,17 +62,17 @@ Matplotlib
 
 The predictive system uses a **Random Forest Classifier** trained on the **Online Shoppers Intention Dataset**.
 
-The model analyzes visitor behavior patterns and predicts the probability of a purchase.
+The model analyzes visitor behavior patterns and predicts the probability that a visitor will complete a purchase.
 
-### Evaluation Metrics
+### Model Evaluation Metrics
 
-Accuracy  
-Precision  
-Recall  
-F1 Score  
-ROC-AUC  
+Accuracy
+Precision
+Recall
+F1 Score
+ROC-AUC
 
-These metrics help evaluate how effectively the model identifies potential customers.
+These metrics measure the model’s ability to correctly identify high-intent customers.
 
 ---
 
@@ -62,28 +80,36 @@ These metrics help evaluate how effectively the model identifies potential custo
 
 The system follows a complete machine learning pipeline:
 
-1. **Data Collection**
-   - Website visitor behavior dataset
+### 1. Data Collection
 
-2. **Data Preprocessing**
-   - Handling missing values  
-   - Encoding categorical variables  
-   - Feature scaling
+Customer browsing behavior dataset.
 
-3. **Model Training**
-   - Random Forest Classifier used for classification
+### 2. Data Preprocessing
 
-4. **Model Evaluation**
-   - Accuracy
-   - Precision
-   - Recall
-   - ROC-AUC
+• Handling missing values
+• Encoding categorical variables
+• Feature scaling and normalization
 
-5. **Prediction System**
-   - Predictions generated through the Streamlit dashboard
+### 3. Model Training
 
-6. **Insights Dashboard**
-   - Visualization of customer behavior patterns and model outputs
+Random Forest classifier trained on historical customer behavior data.
+
+### 4. Model Evaluation
+
+Performance measured using:
+
+* Accuracy
+* Precision
+* Recall
+* ROC-AUC
+
+### 5. Prediction System
+
+The trained model is integrated into a **Streamlit dashboard** to generate predictions in real time.
+
+### 6. Insights Dashboard
+
+The application visualizes customer patterns and provides insights for marketing teams.
 
 ---
 
@@ -91,27 +117,87 @@ The system follows a complete machine learning pipeline:
 
 The system helps businesses:
 
-• Identify high-intent customers  
-• Improve marketing targeting  
-• Reduce bounce rates  
-• Optimize product page engagement  
-• Increase conversion rates  
+• Identify high-intent customers
+• Improve marketing targeting
+• Reduce bounce rates
+• Optimize product page engagement
+• Increase conversion rates
+• Improve marketing campaign efficiency
 
 ---
 
 ## Real World Use Case
 
-This system can be used by e-commerce companies to improve marketing strategies.
+This system can support **e-commerce companies** in optimizing marketing strategies.
 
-Example workflow:
+### Example workflow
 
 1. A company collects browsing behavior data from website visitors.
-2. The dataset is uploaded to the prediction system.
+2. The dataset is uploaded into the prediction system.
 3. The model predicts which visitors are most likely to make a purchase.
-4. Marketing teams can target these high-intent users with personalized promotions.
+4. Marketing teams can target high-intent visitors with personalized promotions.
 
-This helps companies improve marketing ROI and customer engagement.
+This leads to **higher marketing ROI and improved customer engagement**.
 
 ---
 
 ## Project Structure
+
+Customer_Behavior_Prediction_System
+
+data/
+models/
+notebooks/
+pages/
+screenshots/
+
+app.py
+train_model.py
+test_model.py
+
+rf_pipeline_streamlit.pkl
+model_auc.pkl
+
+README.md
+requirements.txt
+LICENSE
+.gitignore
+
+---
+
+## Installation
+
+Clone the repository:
+
+git clone https://github.com/Grema232/Customer-Behavior-Prediction-System-ML.git
+
+Navigate into the project directory:
+
+cd Customer-Behavior-Prediction-System-ML
+
+Install dependencies:
+
+pip install -r requirements.txt
+
+Run the Streamlit application:
+
+streamlit run app.py
+
+---
+
+## Future Improvements
+
+• Deploy model monitoring for prediction drift
+• Integrate real-time customer analytics data
+• Add advanced models such as XGBoost or LightGBM
+• Implement automated model retraining
+• Build REST API for production integration
+
+---
+
+## Authors
+
+Mohammed Grema Alkali
+Master’s in Computer Applications – Data Science Focus
+
+Bashir Umar Zanna
