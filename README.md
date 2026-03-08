@@ -8,7 +8,7 @@ Machine Learning dashboard for predicting customer purchase behavior and generat
 
 ---
 
-## Live Demo
+## 🚀 Live Demo
 
 Try the deployed application here:
 
@@ -48,13 +48,13 @@ The goal of this project is to demonstrate how machine learning can support **da
 
 ## Technologies Used
 
-Python
-Pandas
-NumPy
-Scikit-learn
-Streamlit
-Matplotlib
-Seaborn
+* Python
+* Pandas
+* NumPy
+* Scikit-learn
+* Streamlit
+* Matplotlib
+* Seaborn
 
 ---
 
@@ -66,11 +66,11 @@ The model analyzes visitor behavior patterns and predicts the probability that a
 
 ### Model Evaluation Metrics
 
-Accuracy
-Precision
-Recall
-F1 Score
-ROC-AUC
+* Accuracy
+* Precision
+* Recall
+* F1 Score
+* ROC-AUC
 
 These metrics measure the model’s ability to correctly identify high-intent customers.
 
@@ -86,9 +86,9 @@ Customer browsing behavior dataset.
 
 ### 2. Data Preprocessing
 
-• Handling missing values
-• Encoding categorical variables
-• Feature scaling and normalization
+* Handling missing values
+* Encoding categorical variables
+* Feature scaling and normalization
 
 ### 3. Model Training
 
@@ -117,12 +117,12 @@ The application visualizes customer patterns and provides insights for marketing
 
 The system helps businesses:
 
-• Identify high-intent customers
-• Improve marketing targeting
-• Reduce bounce rates
-• Optimize product page engagement
-• Increase conversion rates
-• Improve marketing campaign efficiency
+* Identify high-intent customers
+* Improve marketing targeting
+* Reduce bounce rates
+* Optimize product page engagement
+* Increase conversion rates
+* Improve marketing campaign efficiency
 
 ---
 
@@ -130,7 +130,7 @@ The system helps businesses:
 
 This system can support **e-commerce companies** in optimizing marketing strategies.
 
-### Example workflow
+### Example Workflow
 
 1. A company collects browsing behavior data from website visitors.
 2. The dataset is uploaded into the prediction system.
@@ -143,6 +143,7 @@ This leads to **higher marketing ROI and improved customer engagement**.
 
 ## Project Structure
 
+```
 Customer_Behavior_Prediction_System
 
 data/
@@ -162,6 +163,7 @@ README.md
 requirements.txt
 LICENSE
 .gitignore
+```
 
 ---
 
@@ -169,35 +171,43 @@ LICENSE
 
 Clone the repository:
 
+```
 git clone https://github.com/Grema232/Customer-Behavior-Prediction-System-ML.git
+```
 
 Navigate into the project directory:
 
+```
 cd Customer-Behavior-Prediction-System-ML
+```
 
 Install dependencies:
 
+```
 pip install -r requirements.txt
+```
 
 Run the Streamlit application:
 
+```
 streamlit run app.py
+```
 
 ---
 
 ## Future Improvements
 
-• Deploy model monitoring for prediction drift
-• Integrate real-time customer analytics data
-• Add advanced models such as XGBoost or LightGBM
-• Implement automated model retraining
-• Build REST API for production integration
+* Deploy model monitoring for prediction drift
+* Integrate real-time customer analytics data
+* Add advanced models such as XGBoost or LightGBM
+* Implement automated model retraining
+* Build REST API for production integration
 
 ---
 
 ## Authors
 
-Mohammed Grema Alkali
+**Mohammed Grema Alkali**
 Master’s in Computer Applications – Data Science Focus
 
-Bashir Umar Zanna
+**Bashir Umar Zanna**
