@@ -94,7 +94,9 @@ accuracy = accuracy_score(y, y_pred)
 precision = 0.74
 recall = 0.62
 f1_score = 0.67
-auc_score = auc(*roc_curve(y, y_prob)[:2])
+
+fpr_temp, tpr_temp, _ = roc_curve(y, y_prob)
+auc_score = auc(fpr_temp, tpr_temp)
 
 c1, c2, c3, c4, c5 = st.columns(5)
 
@@ -154,7 +156,6 @@ st.markdown("---")
 st.subheader("📊 Prediction Probability Distribution")
 
 fig4, ax4 = plt.subplots()
-
 ax4.hist(y_prob, bins=20)
 
 ax4.set_xlabel("Purchase Probability")
@@ -165,7 +166,39 @@ st.pyplot(fig4)
 
 # ----------------------------
 
-# Footer / Credits
+# Customer Intent Segmentation
+
+# ----------------------------
+
+st.markdown("---")
+st.subheader("📊 Customer Purchase Intent Segmentation")
+
+segments = pd.cut(
+y_prob,
+bins=[0, 0.4, 0.7, 1],
+labels=["Low Intent", "Medium Intent", "High Intent"]
+)
+
+segment_counts = segments.value_counts().sort_index()
+
+seg_df = pd.DataFrame({
+"Segment": segment_counts.index,
+"Customers": segment_counts.values
+})
+
+st.dataframe(seg_df)
+
+fig5, ax5 = plt.subplots()
+ax5.bar(seg_df["Segment"], seg_df["Customers"])
+ax5.set_title("Customer Purchase Intent Segments")
+ax5.set_xlabel("Segment")
+ax5.set_ylabel("Number of Customers")
+
+st.pyplot(fig5)
+
+# ----------------------------
+
+# Footer
 
 # ----------------------------
 

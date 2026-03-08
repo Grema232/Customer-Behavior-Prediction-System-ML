@@ -1,68 +1,78 @@
 # Customer Behavior Prediction System
 
-## Overview
-This project is a Machine Learning-based web application that predicts whether a customer is likely to make a purchase based on behavioral and demographic features.
-
-The system uses a Random Forest Classifier integrated into a production-style pipeline and deployed using Streamlit.
+A production-style machine learning system that predicts whether an e-commerce visitor will make a purchase based on their browsing behavior.
 
 ---
 
-## Features
-- Data preprocessing pipeline
-- Random Forest classification model
-- Probability prediction
-- Interactive Streamlit dashboard
-- Clean modular project structure
+## Live Application
+
+https://grema232-customer-behavior-prediction-system-ml-app-8b9t9l.streamlit.app
+
+---
+
+## Dashboard Preview
+
+---
+
+## Project Overview
+
+This project builds a machine learning model that analyzes user interaction data from an e-commerce website and predicts the probability of a purchase.
+
+The model is deployed using an interactive Streamlit dashboard that allows real-time predictions and batch dataset analysis.
+
+---
+
+## Key Features
+
+• Real-time customer purchase prediction
+• Batch predictions from CSV datasets
+• Feature importance analysis
+• Model performance metrics
+• ROC Curve evaluation
+• Confusion matrix visualization
+• Customer purchase intent segmentation
+• Interactive machine learning dashboard
+
+---
+
+## Machine Learning Model
+
+Algorithm: Random Forest Classifier
+
+Evaluation Metrics:
+
+Accuracy: ~0.90
+AUC Score: ~0.92
+
+These metrics indicate strong separation between purchasing and non-purchasing users.
+
+---
+
+## Technologies Used
+
+Python
+Scikit-learn
+Streamlit
+Pandas
+Matplotlib
+Random Forest
 
 ---
 
 ## Project Structure
 
-Customer_Behavior_Prediction_System/
-│
-├── app.py                     # Streamlit web app
-├── requirements.txt           # Dependencies
-├── train_model.py             # Model training script
-│
-├── data/                      # Dataset
-├── models/                    # Saved trained model
-├── notebooks/                 # Jupyter notebooks
-├── figures/                   # Visualizations
-├── report/                    # Project documentation
-│
-└── README.md                  # Project documentation
+Customer_Behavior_Prediction_System
+
+app.py
+data/
+models/
+pages/
+images/
+requirements.txt
 
 ---
 
-## Installation
+## Author
 
-1. Clone the repository:
-git clone <your-repository-link>
-
-2. Navigate into the project directory:
-cd Customer_Behavior_Prediction_System
-
-3. Install dependencies:
-pip install -r requirements.txt
-
----
-
-## Run the Application
-
-streamlit run app.py
-
----
-
-## Model Details
-- Algorithm: Random Forest Classifier
-- Framework: Scikit-learn
-- Deployment: Streamlit
-- Language: Python
-
----
-
-## Authors
-Mohammed Grema Alkali  
-Bashir Umar Zanna  
-
-Master's in Computer Applications (Data Science)
+Mohammed Grema Alkali and Bahir Umar Zanna 
+Master of Computer Applications.
