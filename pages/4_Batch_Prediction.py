@@ -98,6 +98,14 @@ if uploaded_file is not None:
         })
 
         # ----------------------------
+        # Sort Customers by Probability
+        # ----------------------------
+        results = results.sort_values(
+            by="Purchase_Probability",
+            ascending=False
+        )
+
+        # ----------------------------
         # Prediction Summary Dashboard
         # ----------------------------
         st.subheader("📊 Prediction Summary")
@@ -105,14 +113,18 @@ if uploaded_file is not None:
         total_customers = len(results)
         likely_purchase = (results["Prediction"] == "Likely Purchase").sum()
         not_purchase = total_customers - likely_purchase
+        avg_probability = results["Purchase_Probability"].mean()
 
-        col1, col2, col3 = st.columns(3)
+        col1, col2, col3, col4 = st.columns(4)
 
         col1.metric("Total Customers", total_customers)
         col2.metric("Likely to Purchase", likely_purchase)
         col3.metric("Not Likely to Purchase", not_purchase)
+        col4.metric("Avg Purchase Probability", f"{avg_probability:.2%}")
 
-        # Chart
+        # ----------------------------
+        # Chart Visualization
+        # ----------------------------
         chart_data = pd.DataFrame({
             "Category": ["Likely Purchase", "Not Purchase"],
             "Customers": [likely_purchase, not_purchase]
@@ -123,7 +135,7 @@ if uploaded_file is not None:
         # ----------------------------
         # Prediction Results Table
         # ----------------------------
-        st.subheader("📈 Prediction Results")
+        st.subheader("📈 Prediction Results (Sorted by Purchase Probability)")
         st.dataframe(results)
 
         # ----------------------------

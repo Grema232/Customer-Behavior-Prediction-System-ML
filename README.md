@@ -1,78 +1,44 @@
 # Customer Behavior Prediction System
 
-A production-style machine learning system that predicts whether an e-commerce visitor will make a purchase based on their browsing behavior.
+Machine Learning system that predicts whether an online visitor will make a purchase based on browsing behavior.
 
----
+## Features
 
-## Live Application
+• Real-time customer purchase prediction
+• Batch dataset prediction (CSV upload)
+• Model performance analytics
+• Feature importance analysis
+• Customer segmentation with K-Means
+• Interactive Streamlit dashboard
+• Downloadable prediction reports
 
-https://grema232-customer-behavior-prediction-system-ml-app-8b9t9l.streamlit.app
+## Machine Learning Pipeline
 
----
+Dataset → Preprocessing → Random Forest Model → Predictions → Streamlit Dashboard
+
+## Model Performance
+
+| Metric    | Score |
+| --------- | ----- |
+| Accuracy  | ~0.89 |
+| Precision | ~0.74 |
+| Recall    | ~0.62 |
+| F1 Score  | ~0.67 |
+| AUC       | ~0.92 |
 
 ## Dashboard Preview
 
----
+![Dashboard](dashboard_preview.png)
 
-## Project Overview
-
-This project builds a machine learning model that analyzes user interaction data from an e-commerce website and predicts the probability of a purchase.
-
-The model is deployed using an interactive Streamlit dashboard that allows real-time predictions and batch dataset analysis.
-
----
-
-## Key Features
-
-• Real-time customer purchase prediction
-• Batch predictions from CSV datasets
-• Feature importance analysis
-• Model performance metrics
-• ROC Curve evaluation
-• Confusion matrix visualization
-• Customer purchase intent segmentation
-• Interactive machine learning dashboard
-
----
-
-## Machine Learning Model
-
-Algorithm: Random Forest Classifier
-
-Evaluation Metrics:
-
-Accuracy: ~0.90
-AUC Score: ~0.92
-
-These metrics indicate strong separation between purchasing and non-purchasing users.
-
----
-
-## Technologies Used
+## Tech Stack
 
 Python
-Scikit-learn
-Streamlit
+Scikit-Learn
 Pandas
 Matplotlib
-Random Forest
-
----
-
-## Project Structure
-
-Customer_Behavior_Prediction_System
-
-app.py
-data/
-models/
-pages/
-images/
-requirements.txt
-
----
+Streamlit
 
 ## Author
 
-Mohammed Grema Alkali and Bahir Umar Zanna 
-Master of Computer Applications.
+Mohammed Grema Alkali and Bashir Umar Zanna
+Master's in Computer Applications.
