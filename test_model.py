@@ -10,7 +10,7 @@ print("Model loaded successfully")
 
 print("Loading dataset...")
 
-# Load dataset from data folder
+# Load dataset
 data = pd.read_csv("data/online_shoppers_intention.csv")
 
 print("Dataset loaded successfully")
@@ -22,20 +22,18 @@ if "Revenue" in data.columns:
 else:
     X_test = data
 
-print("Running predictions...")
+# Take only 10 random samples (so output is readable)
+X_sample = X_test.sample(10, random_state=42)
 
-predictions = model.predict(X_test)
+print("\nSample Data:")
+print(X_sample)
 
-print("Predictions completed")
+print("\nRunning predictions...")
 
-# Attach predictions
-data["Prediction"] = predictions
+predictions = model.predict(X_sample)
+probabilities = model.predict_proba(X_sample)[:, 1]
 
-print("Saving results...")
+print("\nResults:")
 
-data.to_csv("prediction_results.csv", index=False)
-
-print("===================================")
-print("SUCCESS: Predictions saved!")
-print("File created: prediction_results.csv")
-print("===================================")
+for i in range(len(X_sample)):
+    print(f"Customer {i+1}: Prediction = {predictions[i]}, Probability = {probabilities[i]:.4f}")

@@ -1,0 +1,6 @@
+﻿Administrative,Administrative_Duration,Informational,Informational_Duration,ProductRelated,ProductRelated_Duration,BounceRates,ExitRates,PageValues,SpecialDay,Month,OperatingSystems,Browser,Region,TrafficType,VisitorType,Weekend
+5,120,1,30,45,2000,0.01,0.02,120,0,Nov,2,2,1,2,Returning_Visitor,FALSE
+0,0,0,0,2,30,0.25,0.3,0,0,Feb,1,1,1,1,New_Visitor,FALSE
+3,60,0,0,15,400,0.05,0.07,10,0,May,2,2,2,3,Returning_Visitor,TRUE
+8,200,2,80,60,3000,0.02,0.03,200,0,Dec,3,3,2,4,Returning_Visitor,FALSE
+1,20,0,0,5,100,0.15,0.18,2,0,Mar,1,1,3,2,New_Visitor,TRUE
