@@ -15,12 +15,29 @@ model = joblib.load(model_path)
 
 st.title("📂 Batch Customer Prediction")
 
-st.markdown("""
-Upload a dataset to generate purchase predictions for multiple customers.
+# ----------------------------
+# HOW TO USE
+# ----------------------------
+st.info("""
+**How to use:**
+1. Upload a dataset (CSV or Excel)
+2. Ensure it matches the required structure
+3. System validates data automatically
+4. Predictions and insights will be generated
+""")
 
-Supported formats:
-- CSV
-- Excel (.xlsx)
+# ----------------------------
+# Business Context
+# ----------------------------
+st.markdown("""
+### 💼 Business Context
+
+This module enables bulk prediction of customer purchase behavior.
+
+Use cases:
+- Campaign targeting  
+- Customer segmentation  
+- Conversion optimization  
 """)
 
 # ----------------------------
@@ -72,27 +89,25 @@ if uploaded_file is not None:
     ]
 
     # ----------------------------
-    # VALIDATION SYSTEM (PRO)
+    # VALIDATION SYSTEM
     # ----------------------------
     uploaded_columns = list(data.columns)
 
     missing_cols = [col for col in expected_features if col not in uploaded_columns]
     extra_cols = [col for col in uploaded_columns if col not in expected_features]
 
-    # ❌ Missing columns → STOP
     if missing_cols:
         st.error(f"❌ Missing required columns: {missing_cols}")
         st.stop()
 
-    # ⚠ Extra columns → warn + drop
     if extra_cols:
         st.warning(f"⚠ Extra columns detected and removed: {extra_cols}")
         data = data[expected_features]
 
-    # Ensure correct column order
+    # Ensure correct order
     data = data[expected_features]
 
-    st.success("✅ Dataset structure validated successfully.")
+    st.success("✅ Dataset validated successfully. Ready for prediction.")
 
     # ----------------------------
     # Run Predictions
@@ -105,28 +120,25 @@ if uploaded_file is not None:
         st.stop()
 
     # ----------------------------
-    # Create Results Table
+    # Results Table
     # ----------------------------
     results = data.copy()
     results["Purchase_Probability"] = probabilities
     results["Prediction"] = predictions
 
-    # Convert predictions to readable labels
     results["Prediction"] = results["Prediction"].map({
         1: "Likely Purchase",
         0: "No Purchase"
     })
 
-    # ----------------------------
-    # Sort Customers by Probability
-    # ----------------------------
+    # Sort
     results = results.sort_values(
         by="Purchase_Probability",
         ascending=False
     )
 
     # ----------------------------
-    # Prediction Summary Dashboard
+    # SUMMARY METRICS
     # ----------------------------
     st.subheader("📊 Prediction Summary")
 
@@ -135,31 +147,47 @@ if uploaded_file is not None:
     not_purchase = total_customers - likely_purchase
     avg_probability = results["Purchase_Probability"].mean()
 
-    col1, col2, col3, col4 = st.columns(4)
+    # NEW METRIC (important)
+    high_intent = (results["Purchase_Probability"] >= 0.7).sum()
+
+    col1, col2, col3, col4, col5 = st.columns(5)
 
     col1.metric("Total Customers", total_customers)
-    col2.metric("Likely to Purchase", likely_purchase)
-    col3.metric("Not Likely to Purchase", not_purchase)
-    col4.metric("Avg Purchase Probability", f"{avg_probability:.2%}")
+    col2.metric("Likely Buyers", likely_purchase)
+    col3.metric("Non-Buyers", not_purchase)
+    col4.metric("Avg Probability", f"{avg_probability:.2%}")
+    col5.metric("High Intent Customers", high_intent)
 
     # ----------------------------
-    # Chart Visualization
+    # Business Interpretation
+    # ----------------------------
+    st.markdown("### 💡 Business Interpretation")
+
+    if likely_purchase / total_customers < 0.15:
+        st.warning("Low conversion potential → Improve engagement and UX.")
+    elif likely_purchase / total_customers < 0.30:
+        st.info("Moderate conversion → Apply targeted campaigns.")
+    else:
+        st.success("High conversion potential → Focus on high-value customers.")
+
+    # ----------------------------
+    # Chart
     # ----------------------------
     chart_data = pd.DataFrame({
-        "Category": ["Likely Purchase", "Not Purchase"],
+        "Category": ["Likely Purchase", "No Purchase"],
         "Customers": [likely_purchase, not_purchase]
     })
 
     st.bar_chart(chart_data.set_index("Category"))
 
     # ----------------------------
-    # Prediction Results Table
+    # Results Table
     # ----------------------------
-    st.subheader("📈 Prediction Results (Sorted by Purchase Probability)")
+    st.subheader("📈 Prediction Results (Sorted by Probability)")
     st.dataframe(results)
 
     # ----------------------------
-    # Download Predictions
+    # Download
     # ----------------------------
     csv = results.to_csv(index=False).encode("utf-8")
 
