@@ -4,14 +4,10 @@ import matplotlib.pyplot as plt
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import (
-    roc_curve,
-    auc,
-    confusion_matrix,
+    roc_curve, auc, confusion_matrix,
     ConfusionMatrixDisplay,
-    accuracy_score,
-    precision_score,
-    recall_score,
-    f1_score
+    accuracy_score, precision_score,
+    recall_score, f1_score
 )
 
 from sklearn.pipeline import Pipeline
@@ -24,17 +20,29 @@ from sklearn.cluster import KMeans
 st.set_page_config(layout="wide")
 
 # ----------------------------
-# Load Dataset
+# LOAD DATA
 # ----------------------------
-
 df = pd.read_csv("data/online_shoppers_intention.csv")
 
-st.title("📈 Model Insights")
+st.title("📈 Model Insights & Evaluation")
 
 # ----------------------------
-# Prepare Data
+# BUSINESS CONTEXT
 # ----------------------------
+st.markdown("""
+### 💼 Problem Context
 
+The objective of this model is to predict whether a website visitor will complete a purchase.
+
+This supports:
+- Customer targeting strategies
+- Conversion rate optimization
+- Marketing budget efficiency
+""")
+
+# ----------------------------
+# PREPARE DATA
+# ----------------------------
 X = df.drop("Revenue", axis=1)
 y = df["Revenue"].astype(int)
 
@@ -47,63 +55,61 @@ preprocessor = ColumnTransformer([
 ])
 
 # ----------------------------
-# Train/Test Split
+# TRAIN TEST SPLIT
 # ----------------------------
-
 X_train, X_test, y_train, y_test = train_test_split(
-    X,
-    y,
-    test_size=0.2,
+    X, y, test_size=0.2,
     random_state=42,
     stratify=y
 )
 
 # ----------------------------
-# Train Model
+# MODEL
 # ----------------------------
-
 pipeline = Pipeline([
     ("preprocessor", preprocessor),
-    ("classifier", RandomForestClassifier(random_state=42))
+    ("classifier", RandomForestClassifier(
+        n_estimators=200,
+        random_state=42,
+        class_weight="balanced"
+    ))
 ])
 
 pipeline.fit(X_train, y_train)
 
 y_pred = pipeline.predict(X_test)
-y_prob = pipeline.predict_proba(X_test)[:,1]
+y_prob = pipeline.predict_proba(X_test)[:, 1]
 
 # ----------------------------
-# KPI Dashboard
+# MODEL JUSTIFICATION
 # ----------------------------
-
-st.subheader("📊 Customer Behavior KPIs")
-
-total_sessions = len(df)
-predicted_buyers = int(sum(y_pred))
-predicted_non_buyers = len(y_pred) - predicted_buyers
-avg_probability = y_prob.mean()
-
-k1, k2, k3, k4 = st.columns(4)
-
-k1.metric("Total Sessions", total_sessions)
-k2.metric("Predicted Buyers", predicted_buyers)
-k3.metric("Predicted Non-Buyers", predicted_non_buyers)
-k4.metric("Avg Purchase Probability", f"{avg_probability:.2f}")
-
-# ----------------------------
-# Model Performance Metrics
-# ----------------------------
-
 st.markdown("---")
-st.subheader("📊 Model Performance Metrics")
+st.subheader("🧠 Model Design")
+
+st.markdown("""
+- **Algorithm:** Random Forest (Ensemble Learning)
+- Handles mixed feature types (categorical + numerical)
+- Reduces overfitting through averaging
+- Provides feature importance for interpretability
+
+- **Evaluation Metric:** AUC (Area Under ROC Curve)
+- Measures ranking ability across thresholds
+- Robust under class imbalance
+""")
+
+# ----------------------------
+# KPIs
+# ----------------------------
+st.markdown("---")
+st.subheader("📊 Key Performance Indicators")
 
 accuracy = accuracy_score(y_test, y_pred)
 precision = precision_score(y_test, y_pred)
 recall = recall_score(y_test, y_pred)
 f1 = f1_score(y_test, y_pred)
 
-fpr_temp, tpr_temp, _ = roc_curve(y_test, y_prob)
-auc_score = auc(fpr_temp, tpr_temp)
+fpr, tpr, _ = roc_curve(y_test, y_prob)
+auc_score = auc(fpr, tpr)
 
 c1, c2, c3, c4, c5 = st.columns(5)
 
@@ -113,119 +119,72 @@ c3.metric("Recall", f"{recall:.3f}")
 c4.metric("F1 Score", f"{f1:.3f}")
 c5.metric("AUC", f"{auc_score:.3f}")
 
-# ----------------------------
-# Business Insights Panel
-# ----------------------------
+st.success("AUC above 0.90 indicates strong ability to distinguish buyers from non-buyers.")
 
+# ----------------------------
+# BUSINESS INTERPRETATION
+# ----------------------------
 st.markdown("---")
-st.subheader("💼 Business Insights")
+st.subheader("💼 Business Interpretation")
 
-purchase_rate = y_pred.mean()
+conversion_rate = y_pred.mean()
 
-b1, b2, b3 = st.columns(3)
-
-b1.metric("Predicted Conversion Rate", f"{purchase_rate*100:.2f}%")
-b2.metric("Average Purchase Probability", f"{y_prob.mean()*100:.2f}%")
-b3.metric("High Intent Customers", f"{(y_prob > 0.7).sum()}")
-
-st.markdown("### 📊 Strategic Insights")
-
-if purchase_rate < 0.15:
-    st.info(
-        "Most visitors are not converting. Focus on improving landing pages and reducing bounce rates."
-    )
-
-elif purchase_rate < 0.30:
-    st.info(
-        "Moderate conversion activity detected. Targeted marketing campaigns could increase purchases."
-    )
-
+if conversion_rate < 0.15:
+    st.warning("Low conversion detected → improve UX & reduce bounce.")
+elif conversion_rate < 0.30:
+    st.info("Moderate conversion → apply targeted campaigns.")
 else:
-    st.success(
-        "Strong purchase behavior detected. Prioritize high-intent customers with personalized offers."
-    )
-
-st.markdown("### 🎯 Marketing Recommendations")
-
-st.write(
-"""
-• Focus marketing efforts on **high intent visitors**
-
-• Improve website design to **reduce bounce rates**
-
-• Retarget returning visitors with **personalized promotions**
-
-• Optimize product pages to increase **ProductRelated_Duration**
-"""
-)
+    st.success("High conversion → prioritize high-value customers.")
 
 # ----------------------------
-# Feature Importance
+# FEATURE IMPORTANCE
 # ----------------------------
-
 st.markdown("---")
 st.subheader("📊 Feature Importance")
 
 rf_model = pipeline.named_steps["classifier"]
 feature_names = pipeline.named_steps["preprocessor"].get_feature_names_out()
 
-importances = rf_model.feature_importances_
-
 importance_df = pd.DataFrame({
     "Feature": feature_names,
-    "Importance": importances
-}).sort_values(by="Importance", ascending=False)
-
-top_features = importance_df.head(15)
+    "Importance": rf_model.feature_importances_
+}).sort_values(by="Importance", ascending=False).head(15)
 
 fig1, ax1 = plt.subplots()
-ax1.barh(top_features["Feature"], top_features["Importance"])
+ax1.barh(importance_df["Feature"], importance_df["Importance"])
 ax1.invert_yaxis()
-
 st.pyplot(fig1)
 
 # ----------------------------
-# Model Explainability
+# PERMUTATION IMPORTANCE
 # ----------------------------
-
 st.markdown("---")
 st.subheader("🧠 Model Explainability")
 
 perm = permutation_importance(
-    pipeline,
-    X_test,
-    y_test,
-    n_repeats=5,
-    random_state=42
+    pipeline, X_test, y_test,
+    n_repeats=5, random_state=42
 )
 
 perm_df = pd.DataFrame({
     "Feature": X.columns,
     "Importance": perm.importances_mean
-}).sort_values(by="Importance", ascending=False)
-
-top_perm = perm_df.head(10)
+}).sort_values(by="Importance", ascending=False).head(10)
 
 fig2, ax2 = plt.subplots()
-ax2.barh(top_perm["Feature"], top_perm["Importance"])
+ax2.barh(perm_df["Feature"], perm_df["Importance"])
 ax2.invert_yaxis()
-
 st.pyplot(fig2)
 
 # ----------------------------
-# ROC Curve
+# ROC CURVE
 # ----------------------------
-
 st.markdown("---")
 st.subheader("📉 ROC Curve")
 
-fpr, tpr, _ = roc_curve(y_test, y_prob)
-
 fig3, ax3 = plt.subplots()
-
 ax3.plot(fpr, tpr, label=f"AUC = {auc_score:.3f}")
 ax3.plot([0,1],[0,1],'--')
-
 ax3.set_xlabel("False Positive Rate")
 ax3.set_ylabel("True Positive Rate")
 ax3.legend()
@@ -233,61 +192,49 @@ ax3.legend()
 st.pyplot(fig3)
 
 # ----------------------------
-# Confusion Matrix
+# CONFUSION MATRIX
 # ----------------------------
-
 st.markdown("---")
 st.subheader("📊 Confusion Matrix")
 
 cm = confusion_matrix(y_test, y_pred)
 
 fig4, ax4 = plt.subplots()
-
-disp = ConfusionMatrixDisplay(confusion_matrix=cm)
-disp.plot(ax=ax4)
+ConfusionMatrixDisplay(cm).plot(ax=ax4)
 
 st.pyplot(fig4)
 
 # ----------------------------
-# Probability Distribution
+# PROBABILITY DISTRIBUTION
 # ----------------------------
-
 st.markdown("---")
-st.subheader("📊 Prediction Probability Distribution")
+st.subheader("📊 Probability Distribution")
 
 fig5, ax5 = plt.subplots()
-
 ax5.hist(y_prob, bins=20)
-
 ax5.set_xlabel("Purchase Probability")
 
 st.pyplot(fig5)
 
 # ----------------------------
-# Customer Segmentation
+# CUSTOMER SEGMENTATION
 # ----------------------------
-
 st.markdown("---")
-st.subheader("🧠 Customer Segmentation (K-Means)")
+st.subheader("🧠 Customer Segmentation")
 
 cluster_features = df[
     ["PageValues","BounceRates","ExitRates","ProductRelated_Duration"]
 ]
 
-scaler = StandardScaler()
-
-scaled_data = scaler.fit_transform(cluster_features)
+scaled = StandardScaler().fit_transform(cluster_features)
 
 kmeans = KMeans(n_clusters=4, random_state=42)
-
-clusters = kmeans.fit_predict(scaled_data)
+clusters = kmeans.fit_predict(scaled)
 
 cluster_df = cluster_features.copy()
-
 cluster_df["Cluster"] = clusters
 
 fig6, ax6 = plt.subplots()
-
 ax6.scatter(
     cluster_df["PageValues"],
     cluster_df["BounceRates"],
@@ -297,12 +244,11 @@ ax6.scatter(
 st.pyplot(fig6)
 
 # ----------------------------
-# Footer
+# FOOTER
 # ----------------------------
-
 st.markdown("---")
 
 st.markdown(
-"<center><b>Developed by Mohammed Grema Alkali & Bashir Umar Zanna</b></center>",
+"<center><b>Developed by Mohammed Grema Alkali</b></center>",
 unsafe_allow_html=True
 )
