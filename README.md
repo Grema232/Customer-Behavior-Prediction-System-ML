@@ -1,4 +1,6 @@
-# Customer Behavior Prediction System: A Machine Learning Approach to Consumer Decision Analysis
+# 🚀 Customer Behavior Prediction System
+
+### A Machine Learning Approach to Consumer Decision Analysis
 
 [![Python](https://img.shields.io/badge/Python-3.10-blue)]()
 [![Streamlit](https://img.shields.io/badge/Built%20with-Streamlit-red)]()
@@ -8,105 +10,163 @@
 
 ## 🔗 Live Application
 
-**Live Demo:**  
+👉 **Live Demo:**
 https://grema232-customer-behavior-prediction-system-ml-app-8b9t9l.streamlit.app
 
-This interactive dashboard enables real-time prediction of customer purchase behavior and exploration of consumer decision patterns.
+This interactive web application enables real-time and batch prediction of customer purchase behavior, supporting data-driven decision-making in e-commerce environments.
 
 ---
 
 ## 🧠 Research Motivation
 
-Understanding customer decision-making is a central problem in modern economics and digital markets.  
-Businesses increasingly rely on behavioral data to predict consumer actions and optimize marketing strategies.
+Understanding customer decision-making is a central problem in modern economics and digital markets.
 
-This project explores how **machine learning can be applied to model and predict customer purchase behavior**, providing insights into **consumer choice dynamics** in an e-commerce environment.
+This project investigates how **machine learning models can capture and predict consumer behavior patterns**, enabling businesses to optimize strategies based on behavioral insights.
 
 ---
 
-## 🎯 Objective
+## 🎯 Project Objective
 
-The primary objective of this study is to develop a predictive system that:
+The system is designed to:
 
-- Identifies customers with high purchase intent  
-- Analyzes behavioral patterns influencing decision-making  
-- Supports data-driven economic and marketing strategies  
+* Predict whether a customer session will result in a purchase
+* Identify high-intent users for targeted marketing
+* Analyze behavioral drivers influencing purchasing decisions
+* Support real-time and batch-level decision analytics
 
 ---
 
 ## ⚙️ Methodology
 
-The system follows a structured machine learning pipeline:
+### 📊 Dataset
 
-### Data Source
-- Online Shoppers Intention Dataset (behavioral browsing data)
+* Online Shoppers Intention Dataset
+* Contains session-based behavioral features from e-commerce platforms
 
-### Data Processing
-- Handling missing values  
-- Encoding categorical variables  
-- Feature scaling and normalization  
+### 🔄 Data Processing
 
-### Model Development
-- Random Forest Classifier  
-- Train-test split validation  
+* Handling categorical and numerical features
+* One-hot encoding for categorical variables
+* Feature standardization where required
 
-### Evaluation Metrics
-- Accuracy  
-- Precision  
-- Recall  
-- F1 Score  
-- ROC-AUC (Achieved: ~0.92)  
+### 🤖 Model Development
 
----
+* Random Forest Classifier (ensemble learning)
+* Stratified train-test split
+* Class imbalance handled using balanced weights
 
-## 📊 Key Results & Insights
+### 📈 Evaluation Metrics
 
-- The model demonstrates strong predictive performance (AUC ≈ 0.92), indicating reliable classification of customer intent  
-- Behavioral variables such as session activity and page interaction significantly influence purchase probability  
-- The system can effectively distinguish between high-intent and low-intent users  
-
-These findings highlight the potential of machine learning in **understanding and predicting consumer behavior at scale**.
+* Accuracy
+* Precision
+* Recall
+* F1 Score
+* ROC-AUC (**Achieved: 0.9215**)
 
 ---
 
-## 💡 Economic & Business Implications
+## 📊 Key Results
 
-This system contributes to:
+* Achieved **AUC = 0.9215**, indicating strong predictive performance
+* Model effectively distinguishes between high and low purchase intent
+* Behavioral features such as engagement and page interaction strongly influence predictions
 
-- Improved targeting of high-value customers  
-- Enhanced efficiency of marketing campaigns  
-- Reduction in customer acquisition costs  
-- Better understanding of digital consumer behavior  
+---
 
-From an economic perspective, the model supports **micro-level analysis of consumer decision-making under uncertainty**.
+## 💡 Business Impact
+
+This system enables:
+
+* 🎯 Targeting high-value customers
+* 📉 Reducing marketing inefficiencies
+* 📊 Improving conversion rate optimization
+* 🧠 Understanding consumer behavior patterns
+
+From an economic perspective, it supports **micro-level modeling of decision-making under uncertainty**.
 
 ---
 
 ## 🚀 System Features
 
-- Real-time customer purchase prediction  
-- Batch prediction for uploaded datasets  
-- Model performance analytics  
-- Feature importance visualization  
-- Customer segmentation (K-Means clustering)  
-- Interactive multi-page Streamlit dashboard  
+* 🔍 Real-time customer prediction engine
+* 📂 Batch prediction with CSV/Excel upload
+* ✅ Dataset validation system (schema enforcement)
+* 📊 Model performance analytics (AUC, ROC, metrics)
+* 🧠 Feature importance & explainability
+* 📈 Customer segmentation (K-Means clustering)
+* 🎛️ Interactive multi-page dashboard
 
 ---
 
-## 🖥️ Dashboard Preview
+## 🏗️ System Architecture
 
-![Dashboard](screenshots/dashboard.png)
+```
+Customer_Behavior_Prediction_System/
+│
+├── app.py                         # Main Streamlit app
+├── pages/
+│   ├── 1_Overview.py              # Executive summary & KPIs
+│   ├── 2_Prediction.py            # Single prediction engine
+│   ├── 3_Model_Insights.py        # Model evaluation & analytics
+│   ├── 4_Batch_Prediction.py      # Bulk prediction module
+│
+├── models/
+│   └── rf_pipeline_streamlit.pkl  # Trained ML pipeline
+│
+├── data/
+│   └── online_shoppers_intention.csv
+│
+├── train_model.py                 # Model training script
+├── requirements.txt              # Dependencies
+└── README.md                     # Project documentation
+```
+
+---
+
+## 🧪 How to Use
+
+### 🔍 Single Prediction
+
+1. Navigate to Prediction page
+2. Input customer session features
+3. Click **Run Prediction**
+4. Interpret probability and decision output
+
+### 📂 Batch Prediction
+
+1. Upload CSV or Excel dataset
+2. Ensure correct feature structure
+3. View predictions and download results
 
 ---
 
 ## 🧰 Technologies Used
 
-- Python  
-- Pandas, NumPy  
-- Scikit-learn  
-- Streamlit  
-- Matplotlib, Seaborn  
+* Python
+* Pandas, NumPy
+* Scikit-learn
+* Streamlit
+* Matplotlib
 
 ---
 
-## 🏗️ Project Architecture
+## 📌 Key Contributions
+
+* Developed a **production-ready ML pipeline**
+* Built a **multi-page interactive web application**
+* Implemented **dataset validation for robust inference**
+* Integrated **real-time and batch prediction systems**
+* Delivered a **business-oriented ML solution**
+
+---
+
+## 👨‍💻 Author
+
+**Mohammed Grema Alkali & Bashir Umar Zanna**
+Master’s in Computer Applications | Data Science Enthusiast
+
+---
+
+## 📜 License
+
+MIT License
