@@ -35,7 +35,6 @@ It enables e-commerce platforms to:
 - Optimize targeted marketing strategies  
 - Reduce bounce-related losses  
 - Improve overall conversion rates  
-
 """)
 
 st.markdown("---")
@@ -56,6 +55,18 @@ k1.metric("Total Sessions", f"{total_sessions:,}")
 k2.metric("Purchase Rate", f"{purchase_rate:.2f}%")
 k3.metric("Avg Page Value", f"{avg_page_value:.2f}")
 k4.metric("Avg Bounce Rate", f"{avg_bounce_rate:.4f}")
+
+# ----------------------------
+# Insight Interpretation
+# ----------------------------
+st.markdown("### 📊 Insight Interpretation")
+
+if purchase_rate < 15:
+    st.warning("Low conversion rate → focus on improving user engagement and reducing bounce.")
+elif purchase_rate < 30:
+    st.info("Moderate conversion → targeted marketing strategies can improve performance.")
+else:
+    st.success("Strong conversion → prioritize high-value customer targeting.")
 
 st.markdown("---")
 
@@ -83,7 +94,7 @@ st.success(
 st.markdown("---")
 
 # ----------------------------
-# Model Explanation
+# Model Overview
 # ----------------------------
 st.subheader("🧠 Model Overview")
 
@@ -92,20 +103,39 @@ st.markdown("""
 - **Training Strategy:** Stratified train-test split  
 - **Feature Processing:** One-hot encoding for categorical variables  
 - **Class Handling:** Balanced class weights to address class imbalance  
-
 """)
 
 # ----------------------------
-# Why This Matters
+# Model Monitoring (NEW - IMPORTANT)
+# ----------------------------
+st.subheader("📡 Model Monitoring (Production Concept)")
+
+st.markdown("""
+In a real-world deployment, model performance must be continuously monitored to ensure reliability.
+
+Key monitoring strategies include:
+- Tracking prediction distribution over time  
+- Monitoring AUC and performance metrics on new data  
+- Detecting data drift (changes in customer behavior patterns)  
+- Triggering model retraining when performance degrades  
+
+This ensures the system remains accurate and aligned with evolving user behavior.
+""")
+
+st.markdown("---")
+
+# ----------------------------
+# Business Impact
 # ----------------------------
 st.subheader("🚀 Business Impact")
 
 st.markdown("""
-This system can be used to:
+This system enables:
 
-- Prioritize high-probability customers for targeted promotions  
-- Reduce marketing spend on low-conversion traffic  
-- Support real-time decision-making in e-commerce platforms  
-- Improve ROI through data-driven customer engagement strategies  
+- Prioritization of high-probability customers  
+- Reduction of marketing inefficiencies  
+- Real-time decision-making support  
+- Improved return on investment (ROI)  
 
+It bridges machine learning with practical business strategy in e-commerce environments.
 """)
