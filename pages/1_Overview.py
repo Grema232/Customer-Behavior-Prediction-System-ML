@@ -23,6 +23,20 @@ auc_score = joblib.load(auc_path)
 st.title("📊 Executive Overview")
 
 # ----------------------------
+# Executive KPI Dashboard
+# ----------------------------
+st.subheader("🚀 Executive Dashboard")
+
+col1, col2, col3, col4 = st.columns(4)
+
+col1.metric("Best Model", "Random Forest")
+col2.metric("Accuracy", "0.896")
+col3.metric("AUC Score", f"{auc_score:.3f}")
+col4.metric("Dataset Size", f"{len(df):,}")
+
+st.markdown("---")
+
+# ----------------------------
 # Business Objective
 # ----------------------------
 st.markdown("""
@@ -31,6 +45,7 @@ st.markdown("""
 This system predicts whether an online customer session will result in a purchase.
 
 It enables e-commerce platforms to:
+
 - Identify high-value customers in real time  
 - Optimize targeted marketing strategies  
 - Reduce bounce-related losses  
@@ -40,7 +55,7 @@ It enables e-commerce platforms to:
 st.markdown("---")
 
 # ----------------------------
-# Key Performance Indicators
+# Key Dataset Insights
 # ----------------------------
 st.subheader("📈 Key Dataset Insights")
 
@@ -56,10 +71,80 @@ k2.metric("Purchase Rate", f"{purchase_rate:.2f}%")
 k3.metric("Avg Page Value", f"{avg_page_value:.2f}")
 k4.metric("Avg Bounce Rate", f"{avg_bounce_rate:.4f}")
 
+st.markdown("---")
+
+# ----------------------------
+# Top Predictive Features
+# ----------------------------
+st.subheader("🔍 Top Predictive Factors")
+
+col1, col2 = st.columns(2)
+
+with col1:
+    st.success("""
+    High Purchase Indicators
+    
+    • High Page Values  
+    • Low Bounce Rates  
+    • Long Product Duration  
+    • High Product Interaction  
+    """)
+
+with col2:
+    st.warning("""
+    Low Purchase Indicators
+    
+    • High Exit Rates  
+    • High Bounce Rates  
+    • Short Session Duration  
+    • Low Page Value  
+    """)
+
+st.markdown("---")
+
+# ----------------------------
+# Business Decision Panel
+# ----------------------------
+st.subheader("📌 Business Decision Panel")
+
+c1, c2, c3 = st.columns(3)
+
+with c1:
+    st.info("""
+    🎯 Target Customers
+    
+    Focus marketing on:
+    • High page value users  
+    • Returning visitors  
+    • Long sessions  
+    """)
+
+with c2:
+    st.warning("""
+    ⚠️ Risk Customers
+    
+    Users with:
+    • High bounce rate  
+    • High exit rate  
+    • Short visits  
+    """)
+
+with c3:
+    st.success("""
+    💰 Revenue Opportunity
+    
+    Prioritize:
+    • Product related visitors  
+    • Engaged users  
+    • High intent sessions  
+    """)
+
+st.markdown("---")
+
 # ----------------------------
 # Insight Interpretation
 # ----------------------------
-st.markdown("### 📊 Insight Interpretation")
+st.subheader("📊 Insight Interpretation")
 
 if purchase_rate < 15:
     st.warning("Low conversion rate → focus on improving user engagement and reducing bounce.")
@@ -82,13 +167,12 @@ with col1:
 
 with col2:
     st.info(
-        "AUC (Area Under the ROC Curve) measures the model’s ability to distinguish "
-        "between purchasing and non-purchasing customers across all thresholds."
+        "AUC measures the model’s ability to distinguish "
+        "between purchasing and non-purchasing customers."
     )
 
 st.success(
-    "The model demonstrates strong predictive performance with an AUC above 0.90, "
-    "indicating excellent capability in identifying high-intent customers."
+    "The model demonstrates strong predictive performance with AUC above 0.90."
 )
 
 st.markdown("---")
@@ -99,27 +183,27 @@ st.markdown("---")
 st.subheader("🧠 Model Overview")
 
 st.markdown("""
-- **Model Used:** Random Forest Classifier  
-- **Training Strategy:** Stratified train-test split  
-- **Feature Processing:** One-hot encoding for categorical variables  
-- **Class Handling:** Balanced class weights to address class imbalance  
+- Model Used: Random Forest Classifier  
+- Training Strategy: Stratified train-test split  
+- Feature Processing: One-hot encoding  
+- Class Handling: Balanced class weights  
 """)
 
+st.markdown("---")
+
 # ----------------------------
-# Model Monitoring (NEW - IMPORTANT)
+# Business Recommendation
 # ----------------------------
-st.subheader("📡 Model Monitoring (Production Concept)")
+st.subheader("💡 Business Recommendation")
 
-st.markdown("""
-In a real-world deployment, model performance must be continuously monitored to ensure reliability.
+st.success("""
+Target customers with:
 
-Key monitoring strategies include:
-- Tracking prediction distribution over time  
-- Monitoring AUC and performance metrics on new data  
-- Detecting data drift (changes in customer behavior patterns)  
-- Triggering model retraining when performance degrades  
+• High Page Values  
+• Low Bounce Rates  
+• Longer Product Interaction Time  
 
-This ensures the system remains accurate and aligned with evolving user behavior.
+These users show strongest purchase intent.
 """)
 
 st.markdown("---")
@@ -136,6 +220,16 @@ This system enables:
 - Reduction of marketing inefficiencies  
 - Real-time decision-making support  
 - Improved return on investment (ROI)  
-
-It bridges machine learning with practical business strategy in e-commerce environments.
 """)
+
+# ----------------------------
+# Footer
+# ----------------------------
+st.markdown("---")
+
+st.caption(
+"Customer Behavior Prediction System | "
+"Random Forest Model | "
+"Streamlit ML Dashboard | "
+"Developed by Mohammed Grema Alkali & Bashir Umar Zanna"
+)
